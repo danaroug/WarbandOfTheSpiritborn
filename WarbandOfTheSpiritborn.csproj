@@ -24,8 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SQL\" />
-    <Folder Include="Views\Admin\" />
+    <Folder Include="SQL\Reports\" />
+    <Folder Include="SQL\Roles\" />
+    <Folder Include="SQL\Users\" />
   </ItemGroup>
 
 </Project>

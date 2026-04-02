@@ -1,17 +1,12 @@
-﻿@using Microsoft.AspNetCore.Identity
-@model List<IdentityUser>
+﻿@model List<WarbandOfTheSpiritborn.Areas.Admin.Controllers.UserRolesViewModel>
 
-@{
-    ViewData["Title"] = "User Management";
-}
-
-<h1>User Management</h1>
+<h2>Users & Roles</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>Email</th>
-            <th>Email Confirmed</th>
+            <th>Roles</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -20,14 +15,16 @@
         {
             <tr>
                 <td>@user.Email</td>
-                <td>@user.EmailConfirmed</td>
                 <td>
-                    <!-- Placeholder for future actions like Edit, Assign Roles -->
-                    <a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@user.Id">Details</a>
+                    @string.Join(", ", user.Roles)
+                </td>
+                <td>
+                    <a asp-action="EditRoles" asp-route-userId="@user.UserId" class="btn btn-primary btn-sm">Edit Roles</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
 
 
