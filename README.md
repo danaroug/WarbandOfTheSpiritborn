@@ -68,4 +68,10 @@ https://github.com/user-attachments/assets/c48fc35f-905b-4618-835c-308f1eedbb78
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 7. Artwork & Assets
+
+All artwork, visuals, and other creative assets used in this project are original creations made specifically for this repository.
+They are not available for reuse, modification, or redistribution without explicit permission.
+If you’d like to reference or include any of them in your own project, please reach out first.
+
 
