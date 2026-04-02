@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WarbandOfTheSpiritborn.Models
 {
@@ -9,12 +6,10 @@ namespace WarbandOfTheSpiritborn.Models
     {
         public int Id { get; set; }
 
-        public string AboutTitle { get; set; }
-        public string AboutText { get; set; }
+        [Required]
+        public string AboutTitle { get; set; } = string.Empty;
 
-        public About()
-        {
-
-        }
+        [Required]
+        public string AboutText { get; set; } = string.Empty;
     }
 }
