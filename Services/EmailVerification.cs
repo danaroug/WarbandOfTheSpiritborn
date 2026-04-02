@@ -1,4 +1,5 @@
-﻿using WarbandOfTheSpiritborn.Models;
+﻿using System;
+using WarbandOfTheSpiritborn.Models;
 
 namespace WarbandOfTheSpiritborn.Models
 {

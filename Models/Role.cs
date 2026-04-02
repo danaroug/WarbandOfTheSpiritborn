@@ -1,4 +1,6 @@
-﻿namespace WarbandOfTheSpiritborn.Models
+﻿using System.Collections.Generic;
+
+namespace WarbandOfTheSpiritborn.Models
 {
     // Represents a user role (e.g., admin, user, guest)
     public class Role

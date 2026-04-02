@@ -1,4 +1,6 @@
-﻿namespace WarbandOfTheSpiritborn.Models
+﻿using System.Collections.Generic;
+
+namespace WarbandOfTheSpiritborn.Models
 {
     // Represents a user account in the system
     public class User
@@ -16,4 +18,3 @@
         public ICollection<UserRole> UserRoles { get; set; } // Many-to-many relationship to Roles
     }
 }
-

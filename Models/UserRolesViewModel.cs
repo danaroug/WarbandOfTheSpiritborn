@@ -1,4 +1,6 @@
-﻿namespace WarbandOfTheSpiritborn.Models
+﻿using System.Collections.Generic;
+
+namespace WarbandOfTheSpiritborn.Models
 {
     public class UserRolesViewModel
     {
