@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
@@ -21,20 +16,25 @@ namespace WarbandOfTheSpiritborn.Controllers
         }
 
         // GET: Events
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchPhrase)
         {
-            return View(await _context.Events.ToListAsync());
+            IQueryable<Events> query = _context.Events.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchPhrase))
+            {
+                query = query.Where(e => e.EventName != null && e.EventName.Contains(searchPhrase));
+            }
+
+            var events = await query
+                .OrderBy(e => e.Date)
+                .ThenBy(e => e.Time)
+                .ToListAsync();
+
+            ViewData["SearchPhrase"] = searchPhrase;
+
+            return View(events);
         }
-        // GET: Events/ShowSearchForm
-        public IActionResult ShowSearchForm()
-        {
-            return View();
-        }
-        // GET: Events/ShowSearchResults
-        public async Task<IActionResult> ShowSearchResults(String SearchPhrase)
-        {
-            return View("Index", await _context.Events.Where(j=> j.EventName.Contains(SearchPhrase)).ToListAsync()); //Using an arrow function to filter results
-        }
+
         // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -43,14 +43,16 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var events = await _context.Events
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (events == null)
+            var eventItem = await _context.Events
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (eventItem == null)
             {
                 return NotFound();
             }
 
-            return View(events);
+            return View(eventItem);
         }
 
         // GET: Events/Create
@@ -61,22 +63,24 @@ namespace WarbandOfTheSpiritborn.Controllers
         }
 
         // POST: Events/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EventName,EventInfo,Time, Date")] Events events)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("Id,EventName,EventInfo,Time,Date")] Events eventItem)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(events);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(eventItem);
             }
-            return View(events);
+
+            _context.Add(eventItem);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Events/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,50 +88,52 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var events = await _context.Events.FindAsync(id);
-            if (events == null)
+            var eventItem = await _context.Events.FindAsync(id);
+
+            if (eventItem == null)
             {
                 return NotFound();
             }
-            return View(events);
+
+            return View(eventItem);
         }
 
         // POST: Events/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EventName,EventInfo,Time")] Events events)
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,EventName,EventInfo,Time,Date")] Events eventItem)
         {
-            if (id != events.Id)
+            if (id != eventItem.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(events);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EventsExists(events.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(eventItem);
             }
-            return View(events);
+
+            try
+            {
+                _context.Update(eventItem);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EventExists(eventItem.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Events/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,28 +141,38 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var events = await _context.Events
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (events == null)
+            var eventItem = await _context.Events
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (eventItem == null)
             {
                 return NotFound();
             }
 
-            return View(events);
+            return View(eventItem);
         }
 
         // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var events = await _context.Events.FindAsync(id);
-            _context.Events.Remove(events);
+            var eventItem = await _context.Events.FindAsync(id);
+
+            if (eventItem == null)
+            {
+                return NotFound();
+            }
+
+            _context.Events.Remove(eventItem);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EventsExists(int id)
+        private bool EventExists(int id)
         {
             return _context.Events.Any(e => e.Id == id);
         }

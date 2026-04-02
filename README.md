@@ -1,72 +1,49 @@
-﻿# ASP.NET Blog
+﻿# Warband of the Spiritborn
 
-A personal blog project built using ASP.NET Core MVC. This project showcases basic blogging functionality, including post creation, editing, deletion, and display.
+Warband of the Spiritborn is an ASP.NET Core MVC web application built to support a gaming community.  
+The project includes blog content, event management, build sharing, gallery uploads, authentication, and an admin area for role-based management.
 
----
-
-## 1. Features
-
-- Create, edit, delete blog posts  
-- List all posts on the homepage
-- Create, edit, delete events
-- Search for events
-- View individual posts
-- Add, delete pictures
-- Basic authentication and authorization  
-- Simple layout using Bootstrap  
+This repository is also a personal full-stack learning project focused on building a structured, maintainable ASP.NET Core application with Entity Framework Core and ASP.NET Identity.
 
 ---
 
-## 2. Getting Started
+## Features
+
+- Blog post management
+- Event creation, editing, deletion, and search
+- Profession-based build browsing
+- Gallery image upload and deletion
+- Authentication and role-based authorisation with ASP.NET Identity
+- Admin area for user and role management
+- Bootstrap-based UI
+
+---
+
+## Tech Stack
+
+- ASP.NET Core MVC
+- Entity Framework Core
+- SQL Server / LocalDB
+- ASP.NET Core Identity
+- Bootstrap 5
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- [.NET SDK 8+](https://dotnet.microsoft.com/download)  
-- Visual Studio 2022 or higher (with ASP.NET workload)  
-- SQL Server Express or LocalDB (optional, depending on config)
+Make sure you have the following installed:
 
-### Setup Instructions
+- .NET 8 SDK
+- Visual Studio 2022 or later with the ASP.NET and web development workload
+- SQL Server Express or LocalDB
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/danaroug/aspnet-blog.git
 cd aspnet-blog
-dotnet restore
-dotnet build
-dotnet run
-```
-## 3. Development
-
-To run in development mode with auto-reload:
-
-```bash
-dotnet watch run
-```
-## 4. Folder Structure
-
-```
-aspnet-blog/
-├── Controllers/
-├── Models/
-├── Views/
-│   ├── Shared/
-│   └── Blog/
-├── wwwroot/
-├── appsettings.json
-├── Program.cs
-├── Startup.cs
-└── README.md
-```
-
-## 5. Contributions
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-https://github.com/user-attachments/assets/c48fc35f-905b-4618-835c-308f1eedbb78
-
-
-## 6. License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 7. Artwork & Assets
 

@@ -1,30 +1,31 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
 
-
 namespace WarbandOfTheSpiritborn.Controllers
 {
     public class GalleriesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public GalleriesController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
+        public GalleriesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            webHostEnvironment = hostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Galleries
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Gallery.ToListAsync());
+            var galleryItems = await _context.Gallery
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(galleryItems);
         }
 
         // GET: Galleries/Details/5
@@ -35,14 +36,16 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var gallery = await _context.Gallery
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gallery == null)
+            var galleryItem = await _context.Gallery
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (galleryItem == null)
             {
                 return NotFound();
             }
 
-            return View(gallery);
+            return View(galleryItem);
         }
 
         // GET: Galleries/Create
@@ -53,48 +56,33 @@ namespace WarbandOfTheSpiritborn.Controllers
         }
 
         // POST: Galleries/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> New(GalleryViewModel model)
+        [Authorize]
+        public async Task<IActionResult> Create(GalleryViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string uniqueFileName = UploadedFile(model);
-
-                Gallery gallery = new Gallery
-                {
-                    Picture = uniqueFileName,
-                };
-                _context.Add(gallery);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
-            return View();
-        }
 
-        private string UploadedFile(GalleryViewModel model)
-        {
-            string uniqueFileName = null;
+            var fileName = await SaveUploadedFileAsync(model);
 
-            if (model.Image != null)
+            if (string.IsNullOrWhiteSpace(fileName))
             {
-                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "photos");
-                uniqueFileName = model.Image.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using var fileStream = new FileStream(filePath, FileMode.Create);
-                model.Image.CopyTo(fileStream);
+                ModelState.AddModelError(nameof(model.Image), "Please choose an image.");
+                return View(model);
             }
-            return uniqueFileName;
-        }
-        
-        public void DeleteFile(GalleryViewModel model)
-        {
-            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "photos");
-            string uniqueFileName = model.Image.FileName;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            System.IO.File.Delete(filePath);
+
+            var galleryItem = new Gallery
+            {
+                Picture = fileName
+            };
+
+            _context.Gallery.Add(galleryItem);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Galleries/Delete/5
@@ -106,34 +94,75 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var gallery = await _context.Gallery
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gallery == null)
+            var galleryItem = await _context.Gallery
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (galleryItem == null)
             {
                 return NotFound();
             }
 
-            return View(gallery);
+            return View(galleryItem);
         }
 
         // POST: Galleries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gallery = await _context.Gallery.FindAsync(id);
-            _context.Gallery.Remove(gallery);
+            var galleryItem = await _context.Gallery.FindAsync(id);
 
-            string uniqueFileName = null;
-            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "photos");
-            uniqueFileName = gallery.Picture;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            System.IO.File.Delete(filePath);
+            if (galleryItem == null)
+            {
+                return NotFound();
+            }
 
+            _context.Gallery.Remove(galleryItem);
             await _context.SaveChangesAsync();
+
+            DeleteUploadedFile(galleryItem.Picture);
+
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<string?> SaveUploadedFileAsync(GalleryViewModel model)
+        {
+            if (model.Image == null || model.Image.Length == 0)
+            {
+                return null;
+            }
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "photos");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var extension = Path.GetExtension(model.Image.FileName);
+            var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await model.Image.CopyToAsync(fileStream);
+
+            return uniqueFileName;
+        }
+
+        private void DeleteUploadedFile(string? fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return;
+            }
+
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "photos");
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
     }
 }
 
-    
+

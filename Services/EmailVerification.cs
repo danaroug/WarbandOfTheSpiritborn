@@ -1,4 +1,5 @@
-﻿using WarbandOfTheSpiritborn.Models;
+﻿using System;
+using WarbandOfTheSpiritborn.Models;
 
 namespace WarbandOfTheSpiritborn.Models
 {
@@ -12,8 +13,6 @@ namespace WarbandOfTheSpiritborn.Models
         public DateTime Expiry { get; set; } // Time until token becomes invalid
 
         public int UserId { get; set; } // Foreign key linking to the User
-
-        public User User { get; set; } // Navigation property to access the associated user
     }
 }
 

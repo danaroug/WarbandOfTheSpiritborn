@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace WarbandOfTheSpiritborn.Models
 {
@@ -9,16 +7,19 @@ namespace WarbandOfTheSpiritborn.Models
     {
         public int Id { get; set; }
 
-        public string BlogName { get; set; }
-        public string BlogPost { get; set; }
-        public string BlogAuthor { get; set; }
-        public DateTime ArticleDate { get; set; }
-        public Blog()
-        {
-            ArticleDate = DateTime.UtcNow;
-        }
-        public string Comment { get; set; }
-        public string Reply { get; set; }
-        
+        [Required]
+        public string BlogName { get; set; } = string.Empty;
+
+        [Required]
+        public string BlogPost { get; set; } = string.Empty;
+
+        [Required]
+        public string BlogAuthor { get; set; } = string.Empty;
+
+        public DateTime ArticleDate { get; set; } = DateTime.UtcNow;
+
+        public string? Comment { get; set; }
+
+        public string? Reply { get; set; }
     }
 }
