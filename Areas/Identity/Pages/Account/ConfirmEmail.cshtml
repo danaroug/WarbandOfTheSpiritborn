@@ -1,7 +1,24 @@
 ﻿@page
 @model ConfirmEmailModel
+
 @{
     ViewData["Title"] = "Confirm email";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <section class="auth-shell text-center">
+            <h1 class="section-title mb-2">@ViewData["Title"]</h1>
+            <p class="section-subtitle mb-4">
+                Your email confirmation is being processed.
+            </p>
+
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+            <div class="auth-links mt-4 align-items-center">
+                <a asp-page="./Login">Go to login</a>
+                <a asp-page="./Register">Create another account</a>
+            </div>
+        </section>
+    </div>
+</div>

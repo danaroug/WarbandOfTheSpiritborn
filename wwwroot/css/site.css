@@ -545,3 +545,45 @@ button.accept-policy {
         justify-content: flex-start;
     }
 }
+/* Identity pages */
+
+.auth-form .form-label {
+    margin-bottom: 0.45rem;
+    font-weight: 600;
+    color: var(--app-text);
+}
+
+.auth-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+    .auth-links a {
+        font-weight: 600;
+    }
+
+.external-login-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.empty-state-text {
+    color: var(--app-text-soft);
+    line-height: 1.6;
+}
+
+.form-check-input:checked {
+    background-color: var(--app-accent);
+    border-color: var(--app-accent);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(138, 58, 24, 0.12);
+}
+/* Auth helpers */
+
+.auth-shell.text-center .auth-links {
+    align-items: center;
+}
