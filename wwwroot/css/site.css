@@ -587,3 +587,114 @@ button.accept-policy {
 .auth-shell.text-center .auth-links {
     align-items: center;
 }
+
+/* Blog views */
+
+.blog-editor-form .form-label {
+    margin-bottom: 0.45rem;
+    font-weight: 600;
+    color: var(--app-text);
+}
+
+.blog-editor-textarea {
+    min-height: 420px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.blog-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: var(--app-text-soft);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.blog-preview {
+    color: var(--app-text);
+    line-height: 1.75;
+    white-space: pre-line;
+}
+/* Blog details */
+
+.blog-details-shell {
+    padding: 2rem;
+}
+
+.blog-details-content {
+    color: var(--app-text);
+    line-height: 1.85;
+    font-size: 1.02rem;
+    white-space: normal;
+    word-break: break-word;
+}
+/* Quill editor */
+
+.blog-quill-editor {
+    min-height: 420px;
+    background: rgba(255, 251, 248, 0.92);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ql-toolbar.ql-snow {
+    border: 1px solid rgba(138, 58, 24, 0.16) !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0;
+    background: rgba(244, 239, 235, 0.9);
+}
+
+.ql-container.ql-snow {
+    border: 1px solid rgba(138, 58, 24, 0.16) !important;
+    border-radius: 0 0 12px 12px;
+    background: rgba(255, 251, 248, 0.96);
+    min-height: 360px;
+    font-family: "Josefin Sans", sans-serif;
+    color: var(--app-text);
+}
+
+.ql-editor {
+    min-height: 360px;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--app-text);
+}
+
+    .ql-editor.ql-blank::before {
+        color: var(--app-text-soft) !important;
+        font-style: normal;
+    }
+
+.blog-details-content p,
+.blog-details-content ul,
+.blog-details-content ol,
+.blog-details-content blockquote,
+.blog-details-content pre,
+.blog-details-content h2,
+.blog-details-content h3,
+.blog-details-content h4 {
+    margin-bottom: 1rem;
+}
+
+.blog-details-content ul,
+.blog-details-content ol {
+    padding-left: 1.5rem;
+}
+
+.blog-details-content blockquote {
+    padding: 0.9rem 1rem;
+    border-left: 4px solid var(--app-accent);
+    background: var(--app-accent-soft);
+    border-radius: 0 10px 10px 0;
+}
+
+.blog-details-content a {
+    color: var(--app-accent-strong);
+    text-decoration: underline;
+}

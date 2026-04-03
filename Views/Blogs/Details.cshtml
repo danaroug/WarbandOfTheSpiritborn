@@ -1,0 +1,38 @@
+﻿@model WarbandOfTheSpiritborn.Models.Blog
+
+@{
+    ViewData["Title"] = Model.BlogName;
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+        <article class="content-shell blog-details-shell">
+            <header class="mb-4">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3">
+                    <div>
+                        <h1 class="section-title mb-2">@Model.BlogName</h1>
+                        <div class="blog-meta">
+                            <span>@Model.BlogAuthor</span>
+                            <span>•</span>
+                            <span>@Model.ArticleDate.ToString("dd MMM yyyy")</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <a asp-action="Index" class="btn btn-outline-primary">Back to blog</a>
+
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-primary">Delete</a>
+                        }
+                    </div>
+                </div>
+            </header>
+
+            <div class="blog-details-content">
+                @Html.Raw(Model.BlogPost)
+            </div>
+        </article>
+    </div>
+</div>
