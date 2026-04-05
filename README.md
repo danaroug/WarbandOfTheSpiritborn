@@ -1,7 +1,6 @@
 ﻿# Warband of the Spiritborn
 
-Warband of the Spiritborn is an ASP.NET Core MVC web application built to support a gaming community.  
-The project includes blog content, event management, build sharing, gallery uploads, authentication, and an admin area for role-based management.
+ASP.NET Core MVC community platform for guild events, builds, blog content, gallery management, and role-based administration.
 
 This repository is also a personal full-stack learning project focused on building a structured, maintainable ASP.NET Core application with Entity Framework Core and ASP.NET Identity.
 
@@ -26,6 +25,7 @@ This repository is also a personal full-stack learning project focused on buildi
 - SQL Server / LocalDB
 - ASP.NET Core Identity
 - Bootstrap 5
+- C#
 
 ---
 
@@ -42,7 +42,7 @@ Make sure you have the following installed:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/danaroug/aspnet-blog.git
-cd aspnet-blog
+git clone https://github.com/danaroug/WarbandOfTheSpiritborn.git
+cd WarbandOfTheSpiritborn
 
 
