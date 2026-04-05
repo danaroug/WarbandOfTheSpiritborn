@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<WarbandOfTheSpiritborn.Models.About>
-@using Microsoft.AspNetCore.Authorization
-@inject IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "About";
+    var canManageAbout = User.IsInRole("Moderator") || User.IsInRole("Administrator");
 }
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -11,6 +10,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item d-flex align-items-center">
@@ -29,25 +29,34 @@
     <div class="container-fluid">
         <br />
         <h1>Discover our story</h1>
-        <p>
-            <a asp-action="Create">Add Content</a>
-        </p>
+
+        @if (canManageAbout)
+        {
+            <p>
+                <a asp-action="Create">Add Content</a>
+            </p>
+        }
     </div>
+
     <hr />
+
     <div class="container-fluid">
         @foreach (var item in Model)
         {
-            <h2>
-                @Html.DisplayFor(modelItem => item.AboutTitle)
-            </h2>
-            <p>
-                @Html.Raw(item.AboutText.Replace(Environment.NewLine, "<br/>"))
-            </p>
+            <h2>@Html.DisplayFor(modelItem => item.AboutTitle)</h2>
 
             <p>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @Html.Raw(item.AboutText.Replace(Environment.NewLine, "<br />"))
             </p>
+
+            @if (canManageAbout)
+            {
+                <p>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </p>
+            }
+
             <hr />
         }
     </div>

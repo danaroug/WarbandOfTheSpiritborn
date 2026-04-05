@@ -15,63 +15,38 @@ namespace WarbandOfTheSpiritborn.Controllers
             _context = context;
         }
 
-        // GET: Abouts
+        // Everyone can view the About page
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var aboutEntries = await _context.About
-                .AsNoTracking()
-                .ToListAsync();
-
-            return View(aboutEntries);
+            return View(await _context.About.ToListAsync());
         }
 
-        // GET: Abouts/Details/5
-        [Authorize(Roles = "Administrator,Moderator")]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var about = await _context.About
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id);
-
-            if (about == null)
-            {
-                return NotFound();
-            }
-
-            return View(about);
-        }
-
-        // GET: Abouts/Create
-        [Authorize(Roles = "Administrator")]
+        // Only Moderator and Administrator can create About content
+        [Authorize(Roles = "Moderator,Administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Abouts/Create
+        // Only Moderator and Administrator can create About content
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("AboutTitle,AboutText")] About about)
+        [Authorize(Roles = "Moderator,Administrator")]
+        public async Task<IActionResult> Create([Bind("Id,AboutTitle,AboutText")] About about)
         {
             if (!ModelState.IsValid)
             {
                 return View(about);
             }
 
-            _context.About.Add(about);
+            _context.Add(about);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Abouts/Edit/5
-        [Authorize(Roles = "Administrator")]
+        // Only Moderator and Administrator can edit About content
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,7 +55,6 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var about = await _context.About.FindAsync(id);
-
             if (about == null)
             {
                 return NotFound();
@@ -89,10 +63,10 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // POST: Abouts/Edit/5
+        // Only Moderator and Administrator can edit About content
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,AboutTitle,AboutText")] About about)
         {
             if (id != about.Id)
@@ -107,7 +81,7 @@ namespace WarbandOfTheSpiritborn.Controllers
 
             try
             {
-                _context.About.Update(about);
+                _context.Update(about);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -123,8 +97,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Abouts/Delete/5
-        [Authorize(Roles = "Administrator")]
+        // Only Moderator and Administrator can delete About content
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -132,10 +106,7 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var about = await _context.About
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id);
-
+            var about = await _context.About.FirstOrDefaultAsync(m => m.Id == id);
             if (about == null)
             {
                 return NotFound();
@@ -144,28 +115,26 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // POST: Abouts/Delete/5
+        // Only Moderator and Administrator can delete About content
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var about = await _context.About.FindAsync(id);
 
-            if (about == null)
+            if (about != null)
             {
-                return NotFound();
+                _context.About.Remove(about);
+                await _context.SaveChangesAsync();
             }
-
-            _context.About.Remove(about);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool AboutExists(int id)
         {
-            return _context.About.Any(a => a.Id == id);
+            return _context.About.Any(e => e.Id == id);
         }
     }
 }
