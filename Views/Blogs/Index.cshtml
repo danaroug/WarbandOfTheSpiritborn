@@ -1,57 +1,65 @@
-﻿@model IEnumerable<WarbandOfTheSpiritborn.Models.Blog>
+﻿@using System.Net
+@using System.Text.RegularExpressions
+@model IEnumerable<WarbandOfTheSpiritborn.Models.Blog>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blog";
 }
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item d-flex align-items-center">
-                    <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
-                    <i class="bi bi-chevron-right"></i>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-action="Index">Blog</a>
-                </li>
-            </ul>
-        </div>
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+        <h1 class="section-title mb-2">Blog</h1>
+        <p class="section-subtitle mb-0">Guild news, event write-ups, build guides, and community updates.</p>
     </div>
-</nav>
 
-    <div class="container">
-        <h1>Welcome to our Blog</h1>
-        <p>
-            <a asp-action="Create">Create New Post</a>
-        </p>
-        <hr />
-    </div>
-    <div class="container-fluid">
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <a asp-action="Create" class="btn app-btn app-btn-primary">Create post</a>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <section class="content-shell">
+        <p class="mb-0">No blog posts have been published yet.</p>
+    </section>
+}
+else
+{
+    <div class="row g-4">
         @foreach (var item in Model)
         {
-            <h2>
-                @Html.DisplayFor(modelItem => item.BlogName)
-            </h2>
-            <p>
-                @Html.DisplayFor(modelItem => item.BlogPost)
-            </p>
-            <p>
-                Author:
-                @Html.DisplayFor(modelItem => item.BlogAuthor)
-            </p>
-            <p>
-                Posted:
-                @Html.DisplayFor(modelItem => item.ArticleDate)
-            </p>
-            <p>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </p>
-            <hr />
+            var plainText = WebUtility.HtmlDecode(Regex.Replace(item.BlogPost ?? string.Empty, "<.*?>", string.Empty));
+            plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
+            var preview = plainText.Length > 240
+            ? plainText.Substring(0, 240) + "..."
+            : plainText;
+            <div class="col-12 col-lg-6">
+                <article class="content-shell blog-card h-100">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                        <div>
+                            <h2 class="h4 mb-2">@item.BlogName</h2>
+                            <div class="blog-meta">
+                                <span>@item.BlogAuthor</span>
+                                <span>•</span>
+                                <span>@item.ArticleDate.ToString("dd MMM yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="blog-preview mb-4">@preview</p>
+
+                    <div class="d-flex flex-wrap gap-2 mt-auto">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Read more</a>
+
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary">Delete</a>
+                        }
+                    </div>
+                </article>
+            </div>
         }
     </div>
-
+}

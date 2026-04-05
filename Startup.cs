@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WarbandOfTheSpiritborn.Areas.Identity;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
 using WarbandOfTheSpiritborn.Services;
@@ -24,11 +25,13 @@ namespace WarbandOfTheSpiritborn
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); // Use SQL Server for the app database.
 
             services.AddDefaultIdentity<IdentityUser>(options =>
-                options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()  // Add roles support
+            {
+                options.SignIn.RequireConfirmedAccount = true; // Require email confirmation before sign-in.
+            })
+                .AddRoles<IdentityRole>() // Enable role support.
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
@@ -37,11 +40,11 @@ namespace WarbandOfTheSpiritborn
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>
-                    policy.RequireRole("Administrator")); // Match role name here
+                    policy.RequireRole(AppRoles.Administrator)); // Restrict admin actions to administrators.
             });
 
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-            services.AddTransient<IEmailSender, MailKitEmailSender>();
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings")); // Bind email settings from configuration.
+            services.AddTransient<IEmailSender, MailKitEmailSender>(); // Use MailKit for identity emails.
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,7 +52,7 @@ namespace WarbandOfTheSpiritborn
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();  // Optional: provides detailed EF Core migration errors
+                app.UseMigrationsEndPoint(); // Show EF Core migration errors in development.
             }
             else
             {
@@ -62,8 +65,8 @@ namespace WarbandOfTheSpiritborn
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication(); // Authenticate the current user.
+            app.UseAuthorization(); // Apply role and policy checks.
 
             app.UseEndpoints(endpoints =>
             {
@@ -75,10 +78,8 @@ namespace WarbandOfTheSpiritborn
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                endpoints.MapRazorPages();
+                endpoints.MapRazorPages(); // Map Identity and other Razor Pages.
             });
-
-
         }
     }
 }

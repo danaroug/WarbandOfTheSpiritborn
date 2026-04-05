@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Threading.Tasks;
+using WarbandOfTheSpiritborn.Areas.Identity;
 
 namespace WarbandOfTheSpiritborn
 {
@@ -13,13 +12,10 @@ namespace WarbandOfTheSpiritborn
         {
             var host = CreateHostBuilder(args).Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                await CreateRoles(services);
-            }
+            using var scope = host.Services.CreateScope();
+            await IdentitySeeder.SeedAsync(scope.ServiceProvider); // Seed roles and admin user.
 
-            await host.RunAsync();
+            await host.RunAsync(); // Start the web app.
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -28,55 +24,6 @@ namespace WarbandOfTheSpiritborn
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-        private static async Task CreateRoles(IServiceProvider serviceProvider)
-        {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-            string[] roleNames = { "Administrator", "User", "Moderator" };
-
-            // Step 1: Create roles
-            foreach (var roleName in roleNames)
-            {
-                if (!await roleManager.RoleExistsAsync(roleName))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
-
-            // Step 2: Seed the admin user
-            var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL");
-            var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
-
-            if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(adminPassword))
-            {
-                var adminUser = await userManager.FindByEmailAsync(adminEmail);
-                if (adminUser == null)
-                {
-                    var newAdmin = new IdentityUser
-                    {
-                        UserName = adminEmail,
-                        Email = adminEmail,
-                        EmailConfirmed = true
-                    };
-
-                    var result = await userManager.CreateAsync(newAdmin, adminPassword);
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(newAdmin, "Administrator");
-                        Console.WriteLine("Admin user created and assigned 'Administrator' role.");
-                    }
-                    else
-                    {
-                        foreach (var error in result.Errors)
-                        {
-                            Console.WriteLine($"Error creating admin: {error.Description}");
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 

@@ -17,9 +17,5 @@ namespace WarbandOfTheSpiritborn.Models
         public string BlogAuthor { get; set; } = string.Empty;
 
         public DateTime ArticleDate { get; set; } = DateTime.UtcNow;
-
-        public string? Comment { get; set; }
-
-        public string? Reply { get; set; }
     }
 }
