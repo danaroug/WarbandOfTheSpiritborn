@@ -1,77 +1,76 @@
-﻿# ASP.NET Blog
+﻿# Warband of the Spiritborn
 
-A personal blog project built using ASP.NET Core MVC. This project showcases basic blogging functionality, including post creation, editing, deletion, and display.
+ASP.NET Core MVC community platform for guild events, builds, blog content, gallery management, and role-based administration.
 
----
-
-## 1. Features
-
-- Create, edit, delete blog posts  
-- List all posts on the homepage
-- Create, edit, delete events
-- Search for events
-- View individual posts
-- Add, delete pictures
-- Basic authentication and authorization  
-- Simple layout using Bootstrap  
+This repository is also a personal full-stack learning project focused on building a structured, maintainable ASP.NET Core application with Entity Framework Core and ASP.NET Identity.
 
 ---
 
-## 2. Getting Started
+## Features
+
+- Blog post management
+- Event creation, editing, deletion, and search
+- Profession-based build browsing
+- Gallery image upload and deletion
+- Authentication and role-based authorisation with ASP.NET Identity
+- Admin area for user and role management
+- Bootstrap-based UI
+
+---
+
+## Tech Stack
+
+- ASP.NET Core MVC
+- Entity Framework Core
+- SQL Server / LocalDB
+- ASP.NET Core Identity
+- Bootstrap 5
+- C#
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- [.NET SDK 8+](https://dotnet.microsoft.com/download)  
-- Visual Studio 2022 or higher (with ASP.NET workload)  
-- SQL Server Express or LocalDB (optional, depending on config)
+Make sure you have the following installed:
 
-### Setup Instructions
+- .NET 8 SDK
+- Visual Studio 2022 or later with the ASP.NET and web development workload
+- SQL Server Express or LocalDB
+
+### Clone the repository
 
 ```bash
-git clone https://github.com/danaroug/aspnet-blog.git
-cd aspnet-blog
+git clone https://github.com/danaroug/WarbandOfTheSpiritborn.git
+cd WarbandOfTheSpiritborn
+```
+
+### Restore dependencies
+
+```bash
 dotnet restore
+```
+
+### Build the project
+
+```bash
 dotnet build
+```
+
+### Run the application
+
+```bash
 dotnet run
 ```
-## 3. Development
+### Notes
 
-To run in development mode with auto-reload:
+This project uses ASP.NET Identity for authentication and role-based access control.
 
-```bash
-dotnet watch run
-```
-## 4. Folder Structure
+---
 
-```
-aspnet-blog/
-├── Controllers/
-├── Models/
-├── Views/
-│   ├── Shared/
-│   └── Blog/
-├── wwwroot/
-├── appsettings.json
-├── Program.cs
-├── Startup.cs
-└── README.md
-```
+## Assets
 
-## 5. Contributions
+All artwork, visuals, and other creative assets used in this project were created specifically for this repository.
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-https://github.com/user-attachments/assets/c48fc35f-905b-4618-835c-308f1eedbb78
-
-
-## 6. License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 7. Artwork & Assets
-
-All artwork, visuals, and other creative assets used in this project are original creations made specifically for this repository.
 They are not available for reuse, modification, or redistribution without explicit permission.
-If you’d like to reference or include any of them in your own project, please reach out first.
-
-

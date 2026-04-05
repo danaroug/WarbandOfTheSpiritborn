@@ -5,116 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WarbandOfTheSpiritborn</title>
 
-    <!-- CSS only -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@340&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/pictures/WoTS-logo.jpg" alt="logo" width="48" height="48" />
+<body class="app-body">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg simple-nav">
+            <div class="container-xl">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/pictures/WoTS-logo.jpg" alt="Warband of the Spiritborn logo" width="48" height="48" class="site-logo" />
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+                <button class="navbar-toggler custom-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNav"
+                        aria-controls="mainNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        @* Admin-only link at the start *@
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-3 mb-lg-0 align-items-lg-center">
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Admin" asp-action="Users">
-                                    <i class="bi bi-person-lines-fill"></i> User Management
+                                <a class="nav-link app-nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Users">
+                                    <i class="bi bi-person-lines-fill me-1"></i> User Management
                                 </a>
                             </li>
                         }
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Abouts" asp-action="Index">About</a>
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Abouts" asp-action="Index">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Events" asp-action="Index">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Galleries" asp-action="Index">Gallery</a>
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Galleries" asp-action="Index">Gallery</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Blogs" asp-action="Index">Blog</a>
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle app-nav-link"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
                                 Builds
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" asp-controller="Builds" asp-action="Index">All Builds</a></li>
-                                <li>
-                                    <img class="mb-2" alt="Elementalist" src="~/icons/Profession-Icons/Elementalist_(overhead_icon).png" width="32" height="32" />
-                                    <a class="dropdown-item d-inline p-0" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Elementalist">Elementalist</a>
-                                </li>
-                                <li><img class="mb-2" alt="Engineer" src="~/icons/Profession-Icons/Engineer_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Engineer</a></li>
-                                <li><img class="mb-2" alt="Guardian" src="~/icons/Profession-Icons/Guardian_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Guardian</a></li>
-                                <li><img class="mb-2" alt="Mesmer" src="~/icons/Profession-Icons/Mesmer_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Mesmer</a></li>
-                                <li><img class="mb-2" alt="Necromanser" src="~/icons/Profession-Icons/Necromancer_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Necromancer</a></li>
-                                <li><img class="mb-2" alt="Ranger" src="~/icons/Profession-Icons/Ranger_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Ranger</a></li>
-                                <li><img class="mb-2" alt="Revenat" src="~/icons/Profession-Icons/Revenant_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Revenant</a></li>
-                                <li><img class="mb-2" alt="Thief" src="~/icons/Profession-Icons/Thief_(overhead_icon).png" width="32" height="32" /><a class="dropdown-item d-inline p-0" href="#">Thief</a></li>
-                                <li>
-                                    <img class="mb-2" alt="Warrior" src="~/icons/Profession-Icons/Warrior_(overhead_icon).png" width="32" height="32" />
-                                    <a class="dropdown-item d-inline p-0" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Warrior">Warrior</a>
-                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Elementalist">Elementalist</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Engineer">Engineer</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Guardian">Guardian</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Mesmer">Mesmer</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Necromancer">Necromancer</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Ranger">Ranger</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Revenant">Revenant</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Thief">Thief</a></li>
+                                <li><a class="dropdown-item" asp-controller="Builds" asp-action="ByProfession" asp-route-profession="Warrior">Warrior</a></li>
                             </ul>
                         </li>
                     </ul>
 
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                        <form asp-controller="Events" asp-action="Index" method="get" class="event-search-form d-flex">
+                            <input name="searchPhrase"
+                                   class="form-control app-search-input"
+                                   placeholder="Search events"
+                                   value="@(Context.Request.Query["searchPhrase"])" />
+                            <button type="submit" class="btn app-btn app-btn-primary">Search</button>
+                        </form>
 
-                    <form asp-action="ShowSearchResults" asp-controller="Events" class="d-flex">
-                        <label for="SearchPhrase" class="control-label"></label>
-                        <input name="SearchPhrase" class="form-control" placeholder="Search Events">
-                        <input type="submit" value="Search" class="btn btn-primary btn-dark" />
-                    </form>
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10">
-                <div class="glass-wrapper">
-                    <main role="main" class="main-container p-2">
-                        @RenderBody()
-                    </main>
-                </div>
-            </div>
-            <div class="col-1"></div>
+    <div class="container-xl page-layout">
+        <div class="glass-wrapper">
+            <main role="main" class="main-container p-3 p-md-4 p-xl-5">
+                @RenderBody()
+            </main>
         </div>
     </div>
 
-    <br />
-    <br />
-    <br />
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - @DateTime.Now.Year - WarbandOfTheSpiritborn - Danai Rougkeri - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="site-footer simple-footer">
+        <div class="container-xl footer-inner">
+            <span>&copy; @DateTime.Now.Year WarbandOfTheSpiritborn</span>
+            <span class="footer-divider">•</span>
+            <span>Danai Rougkeri</span>
+            <span class="footer-divider">•</span>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
-    <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+            crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
@@ -23,9 +18,14 @@ namespace WarbandOfTheSpiritborn.Controllers
         // GET: Blogs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Blog.ToListAsync());
+            var blogs = await _context.Blog
+                .AsNoTracking()
+                .OrderByDescending(b => b.ArticleDate)
+                .ToListAsync();
+
+            return View(blogs);
         }
-        
+
         // GET: Blogs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -35,7 +35,9 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var blog = await _context.Blog
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (blog == null)
             {
                 return NotFound();
@@ -52,22 +54,24 @@ namespace WarbandOfTheSpiritborn.Controllers
         }
 
         // POST: Blogs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(blog);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(blog);
             }
-            return View(blog);
+
+            _context.Blog.Add(blog);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Blogs/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,18 +80,19 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var blog = await _context.Blog.FindAsync(id);
+
             if (blog == null)
             {
                 return NotFound();
             }
+
             return View(blog);
         }
 
         // POST: Blogs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
         {
             if (id != blog.Id)
@@ -95,30 +100,31 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(blog);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BlogExists(blog.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(blog);
             }
-            return View(blog);
+
+            try
+            {
+                _context.Blog.Update(blog);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BlogExists(blog.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Blogs/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,7 +133,9 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var blog = await _context.Blog
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (blog == null)
             {
                 return NotFound();
@@ -139,17 +147,25 @@ namespace WarbandOfTheSpiritborn.Controllers
         // POST: Blogs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var blog = await _context.Blog.FindAsync(id);
+
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
             _context.Blog.Remove(blog);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool BlogExists(int id)
         {
-            return _context.Blog.Any(e => e.Id == id);
+            return _context.Blog.Any(b => b.Id == id);
         }
     }
 }

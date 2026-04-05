@@ -18,13 +18,11 @@ namespace WarbandOfTheSpiritborn.Controllers
         // GET: Abouts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.About.ToListAsync());
-        }
+            var aboutEntries = await _context.About
+                .AsNoTracking()
+                .ToListAsync();
 
-        [Authorize(Roles = "Administrator")]
-        public IActionResult Create()
-        {
-            return View();
+            return View(aboutEntries);
         }
 
         // GET: Abouts/Details/5
@@ -37,7 +35,9 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var about = await _context.About
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (about == null)
             {
                 return NotFound();
@@ -46,21 +46,28 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
+        // GET: Abouts/Create
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         // POST: Abouts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("AboutTitle, AboutText")] About about)
+        public async Task<IActionResult> Create([Bind("AboutTitle,AboutText")] About about)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(about);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(about);
             }
-            return View(about);
+
+            _context.About.Add(about);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Abouts/Edit/5
@@ -73,16 +80,16 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var about = await _context.About.FindAsync(id);
+
             if (about == null)
             {
                 return NotFound();
             }
+
             return View(about);
         }
 
         // POST: Abouts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -93,27 +100,27 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(about);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AboutExists(about.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(about);
             }
-            return View(about);
+
+            try
+            {
+                _context.About.Update(about);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AboutExists(about.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Abouts/Delete/5
@@ -126,7 +133,9 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var about = await _context.About
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (about == null)
             {
                 return NotFound();
@@ -142,14 +151,21 @@ namespace WarbandOfTheSpiritborn.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var about = await _context.About.FindAsync(id);
+
+            if (about == null)
+            {
+                return NotFound();
+            }
+
             _context.About.Remove(about);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool AboutExists(int id)
         {
-            return _context.About.Any(e => e.Id == id);
+            return _context.About.Any(a => a.Id == id);
         }
     }
 }

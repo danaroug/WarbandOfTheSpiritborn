@@ -1,41 +1,39 @@
 ﻿@model WarbandOfTheSpiritborn.Models.GalleryViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Upload image";
 }
 
-<h1>Upload new picture</h1>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-6">
+        <section class="form-shell">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="section-title mb-2">Upload image</h1>
+                    <p class="section-subtitle mb-0">Add a new image to the gallery.</p>
+                </div>
 
-<h4>Gallery</h4>
-<hr />
-
-<div class="container">
-    <form enctype="multipart/form-data" asp-action="New">
-        <div class="form-group">
-            <label asp-for="Image" class="control-label"></label>
-            <div class="custom-file">
-                <input asp-for="Image" class="custom-file-input" id="customFile">
-                <label class="custom-file-label" for="customFile"></label>
+                <a asp-action="Index" class="btn btn-outline-primary">Back to gallery</a>
             </div>
-            <span asp-validation-for="Image" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <input type="submit" value="Submit" class="btn btn-primary btn-dark" /> |
-            <a asp-action="Index">Back</a>
-        </div>
-    </form>
-    <br />
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-4">
+                    <label asp-for="Image" class="form-label"></label>
+                    <input asp-for="Image" class="form-control" type="file" accept="image/*" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <button type="submit" class="btn app-btn app-btn-primary">Upload image</button>
+                    <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </div>
 </div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script type="text/javascript">
-        // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        });
-    </script>
-
+    <partial name="_ValidationScriptsPartial" />
 }
