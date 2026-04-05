@@ -44,5 +44,33 @@ Make sure you have the following installed:
 ```bash
 git clone https://github.com/danaroug/WarbandOfTheSpiritborn.git
 cd WarbandOfTheSpiritborn
+```
 
+### Restore dependencies
 
+```bash
+dotnet restore
+```
+
+### Build the project
+
+```bash
+dotnet build
+```
+
+### Run the application
+
+```bash
+dotnet run
+```
+### Notes
+
+This project uses ASP.NET Identity for authentication and role-based access control.
+
+---
+
+## Assets
+
+All artwork, visuals, and other creative assets used in this project were created specifically for this repository.
+
+They are not available for reuse, modification, or redistribution without explicit permission.
