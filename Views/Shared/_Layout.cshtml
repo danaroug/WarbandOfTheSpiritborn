@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WarbandOfTheSpiritborn</title>
+    <title>@ViewData["Title"] - Warband of the Spiritborn</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
@@ -11,15 +11,18 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="app-body">
     <header class="site-header">
         <nav class="navbar navbar-expand-lg simple-nav">
             <div class="container-xl">
-                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand d-flex align-items-center gap-3" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/pictures/WoTS-logo.jpg" alt="Warband of the Spiritborn logo" width="48" height="48" class="site-logo" />
+                    <span class="brand-text d-none d-sm-inline">Warband of the Spiritborn</span>
                 </a>
 
                 <button class="navbar-toggler custom-toggler" type="button"
@@ -105,7 +108,7 @@
 
     <footer class="site-footer simple-footer">
         <div class="container-xl footer-inner">
-            <span>&copy; @DateTime.Now.Year WarbandOfTheSpiritborn</span>
+            <span>&copy; @DateTime.Now.Year Warband of the Spiritborn</span>
             <span class="footer-divider">•</span>
             <span>Danai Rougkeri</span>
             <span class="footer-divider">•</span>

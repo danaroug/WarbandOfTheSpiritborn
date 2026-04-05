@@ -2,40 +2,28 @@
     ViewData["Title"] = "Warband of the Spiritborn";
 }
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item d-flex align-items-center">
-                    <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
-                    <i class="bi bi-chevron-right"></i>
-                </li>
-            </ul>
+<section class="container text-center py-5">
+    <div class="mx-auto" style="max-width: 720px;">
+        <span class="text-uppercase small text-muted d-inline-block mb-3">Guild Wars 2 community hub</span>
+
+        <h1 class="display-5 fw-semibold mb-3">Warband of the Spiritborn</h1>
+
+        <p class="lead mb-3">
+            A community space for Guild Wars 2 players to explore builds, improve their play, and share ideas across every profession.
+        </p>
+
+        <p class="text-muted mb-4">
+            Browse curated builds, discover practical guidance, and connect with players who enjoy learning, refining strategies, and tackling content together.
+        </p>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <a asp-controller="Builds" asp-action="Index" class="btn btn-dark px-4 py-2">
+                Browse Builds
+            </a>
+
+            <a asp-controller="Blogs" asp-action="Index" class="btn btn-outline-secondary px-4 py-2">
+                Read Blog Posts
+            </a>
         </div>
     </div>
-</nav>
-
-<div class="container text-center mt-5">
-    <h1>Welcome to Warband of the Spiritborn</h1>
-    <p class="lead mx-auto" style="max-width: 600px;">
-        We are a passionate Guild Wars 2 community dedicated to sharing the best builds and strategies for every profession.
-        Explore our curated collection and master your favorite playstyle.
-    </p>
-    <p class="lead mx-auto" style="max-width: 600px;">
-        Whether you're new to the game or a veteran veteran, our guides and builds are crafted to help you thrive in every challenge.
-        Join us and elevate your gameplay to the next level!
-    </p>
-    <p class="lead mx-auto" style="max-width: 600px;">
-        Our guild believes in collaboration, growth, and having fun. Connect with fellow adventurers, share your insights, and embark on epic journeys together.
-        The Spiritborn are stronger as one.
-    </p>
-    <p>
-        <a asp-controller="Builds" asp-action="Index" class="text-decoration-none fs-5">
-            → Browse all Builds
-        </a>
-    </p>
-</div>
+</section>

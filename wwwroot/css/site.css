@@ -33,6 +33,13 @@
     --app-success: #3c6b4f;
 }
 
+.brand-text {
+    font-size: 0.98rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: inherit;
+    line-height: 1.2;
+}
 /* Base document */
 
 html {
@@ -55,7 +62,7 @@ body {
     padding-top: 92px;
     padding-bottom: 72px;
     color: var(--app-text);
-    font-family: "Josefin Sans", sans-serif !important;
+    font-family: "Inter", sans-serif;
     background-image: url("/pictures/bg-1.jpg");
     background-position: center;
     background-repeat: no-repeat;
@@ -146,7 +153,6 @@ a {
     margin-bottom: 0;
     padding-top: 0.45rem;
     padding-bottom: 0.45rem;
-    border-radius: 18px;
 }
 
 .navbar-brand img {
@@ -334,8 +340,6 @@ input[type="file"] {
 }
 
 /* Footer */
-
-/* Fixed simple footer */
 
 .site-footer {
     position: fixed;
