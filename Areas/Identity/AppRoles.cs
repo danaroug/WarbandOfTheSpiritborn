@@ -2,8 +2,8 @@
 {
     public static class AppRoles
     {
-        public const string Admin = "Admin";
+        public const string Administrator = "Administrator";
         public const string User = "User";
-        public const string Contributor = "Contributor";
+        public const string Moderator = "Moderator";
     }
 }
