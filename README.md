@@ -58,7 +58,7 @@ dotnet restore
 dotnet build
 ```
 
-### Run the application
+## Run the application
 
 ```bash
 dotnet run
