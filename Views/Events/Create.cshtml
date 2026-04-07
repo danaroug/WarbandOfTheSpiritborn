@@ -1,50 +1,81 @@
 ﻿@model WarbandOfTheSpiritborn.Models.Events
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Event";
 }
 
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" asp-action="Index">Events</a>
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="Create">Create</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-container">
     <div class="container">
         <h1>Create an event</h1>
         <hr />
     </div>
+
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <form asp-action="Create">
+            <div class="col-md-6">
+                <form asp-action="Create" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="EventName" class="control-label">Event Name</label>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="EventName" class="control-label pb-2">Event Name</label>
                         <input asp-for="EventName" class="form-control" />
                         <span asp-validation-for="EventName" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="EventInfo" class="control-label">Event Info</label>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="EventInfo" class="control-label pb-2">Event Info</label>
                         <input asp-for="EventInfo" class="form-control" />
                         <span asp-validation-for="EventInfo" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                    <label asp-for="Time" class="control-label">Event Time</label>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Time" class="control-label pb-2">Event Time</label>
                         <input asp-for="Time" class="form-control" />
                         <span asp-validation-for="Time" class="text-danger"></span>
                     </div>
-                <div class="form-group">
-                    <label asp-for="Date" class="control-label">Event Date</label>
-                    <input asp-for="Date" class="form-control" />
-                    <span asp-validation-for="Time" class="text-danger"></span>
-                </div>
-                    <br />
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary btn-dark" />
-                        <a asp-action="Index">Back</a>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Date" class="control-label pb-2">Event Date</label>
+                        <input asp-for="Date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <input type="submit" value="Create" class="btn btn-dark" />
+                        <a asp-action="Index" class="btn btn-link">Back</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+</div>
 
- 
-
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}

@@ -15,7 +15,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             _context = context;
         }
 
-        // GET: Events
+        // Everyone can view events
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string? searchPhrase)
         {
             IQueryable<Events> query = _context.Events.AsNoTracking();
@@ -35,7 +36,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(events);
         }
 
-        // GET: Events/Details/5
+        // Everyone can view event details
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,17 +57,17 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(eventItem);
         }
 
-        // GET: Events/Create
-        [Authorize]
+        // Only Moderator and Administrator can create events
+        [Authorize(Roles = "Moderator,Administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Events/Create
+        // Only Moderator and Administrator can create events
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Create([Bind("Id,EventName,EventInfo,Time,Date")] Events eventItem)
         {
             if (!ModelState.IsValid)
@@ -79,8 +81,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Events/Edit/5
-        [Authorize]
+        // Only Moderator and Administrator can edit events
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -98,10 +100,10 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Edit/5
+        // Only Moderator and Administrator can edit events
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,EventName,EventInfo,Time,Date")] Events eventItem)
         {
             if (id != eventItem.Id)
@@ -132,8 +134,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Events/Delete/5
-        [Authorize]
+        // Only Moderator and Administrator can delete events
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,10 +155,10 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Delete/5
+        // Only Moderator and Administrator can delete events
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var eventItem = await _context.Events.FindAsync(id);
