@@ -40,6 +40,34 @@
     color: inherit;
     line-height: 1.2;
 }
+/* Button theme overrides */
+
+.btn-outline-primary {
+    --bs-btn-color: var(--app-accent);
+    --bs-btn-border-color: var(--app-accent);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--app-accent);
+    --bs-btn-hover-border-color: var(--app-accent);
+    --bs-btn-focus-shadow-rgb: 138, 58, 24;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--app-accent-strong);
+    --bs-btn-active-border-color: var(--app-accent-strong);
+    --bs-btn-disabled-color: var(--app-accent);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--app-accent);
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--app-accent);
+    --bs-btn-border-color: var(--app-accent);
+    --bs-btn-hover-bg: var(--app-accent-strong);
+    --bs-btn-hover-border-color: var(--app-accent-strong);
+    --bs-btn-focus-shadow-rgb: 138, 58, 24;
+    --bs-btn-active-bg: var(--app-accent-strong);
+    --bs-btn-active-border-color: var(--app-accent-strong);
+    --bs-btn-disabled-bg: var(--app-accent);
+    --bs-btn-disabled-border-color: var(--app-accent);
+}
 /* Base document */
 
 html {
