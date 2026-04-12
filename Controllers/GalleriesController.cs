@@ -58,7 +58,7 @@ namespace WarbandOfTheSpiritborn.Controllers
         // POST: Galleries/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Create(GalleryViewModel model)
         {
             if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ namespace WarbandOfTheSpiritborn.Controllers
         }
 
         // GET: Galleries/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -109,7 +109,7 @@ namespace WarbandOfTheSpiritborn.Controllers
         // POST: Galleries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Moderator,Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var galleryItem = await _context.Gallery.FindAsync(id);

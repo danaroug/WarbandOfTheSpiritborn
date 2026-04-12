@@ -2,15 +2,20 @@
 
 @{
     ViewData["Title"] = "Index";
+    var canManageGalleries = User.IsInRole("Moderator") || User.IsInRole("Administrator");
 }
 
     <div class="main-container">
         <div class="container-fluid">
             <br />
             <h1>Gallery</h1>
+        @if (canManageGalleries)
+        {
             <p>
                 <a asp-action="Create">Upload a picture</a>
             </p>
+        }
+        
         </div>
 
         @foreach (var gallery in Model)
