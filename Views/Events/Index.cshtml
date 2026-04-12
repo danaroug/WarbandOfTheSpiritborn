@@ -27,8 +27,8 @@
 <div class="main-container">
     <div class="container">
         <h1>Events</h1>
-        <p>Take a look at our guild events! We try to organize guild events regularly, join our discord server for sign ups and much more. </p>
-        
+        <p>Take a look at our guild events! We try to organize guild events regularly, join our discord server for sign ups and much more.</p>
+
         @if (canManageEvents)
         {
             <p>
@@ -51,9 +51,12 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Date)
                     </th>
-                    <th>
-                        Action
-                    </th>
+                    @if (canManageEvents)
+                    {
+                        <th>
+                            Action
+                        </th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +82,6 @@
                                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
                         }
-                        
                     </tr>
                 }
             </tbody>
