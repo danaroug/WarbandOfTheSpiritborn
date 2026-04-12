@@ -702,3 +702,24 @@ button.accept-policy {
     color: var(--app-accent-strong);
     text-decoration: underline;
 }
+.auth-nav-form {
+    margin: 0;
+}
+
+.auth-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.auth-nav-button {
+    padding: 0.5rem 1rem;
+    border: 0;
+    background: transparent;
+    text-decoration: none;
+}
+
+    .auth-nav-button:focus,
+    .auth-nav-button:active {
+        box-shadow: none;
+    }
