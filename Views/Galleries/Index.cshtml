@@ -5,29 +5,33 @@
     var canManageGalleries = User.IsInRole("Moderator") || User.IsInRole("Administrator");
 }
 
-    <div class="main-container">
-        <div class="container-fluid">
-            <br />
-            <h1>Gallery</h1>
+<partial name="_HelperNav" model='"Gallery"' />
+
+<div class="main-container">
+    <div class="container-fluid">
+        <br />
+        <h1>Gallery</h1>
+
         @if (canManageGalleries)
         {
             <p>
                 <a asp-action="Create">Upload a picture</a>
             </p>
         }
-        
-        </div>
-
-        @foreach (var gallery in Model)
-        {
-            <div class="gallery-container">
-
-                <div class="img-fluid p-1 m-1 align-content-center">
-
-                    <img src="~/uploads/@gallery.Picture" class="img-fluid img-border" asp-append-version="true" alt="Image" width="800" height="500" />
-                    <br />
-                    <a asp-action="Delete" asp-route-id="@gallery.Id">Delete</a>
-                </div>
-            </div>
-        }
     </div>
+
+    @foreach (var gallery in Model)
+    {
+        <div class="gallery-container">
+            <div class="img-fluid p-1 m-1 align-content-center">
+                <img src="~/uploads/@gallery.Picture" class="img-fluid img-border" asp-append-version="true" alt="Image" width="800" height="500" />
+                <br />
+
+                @if (canManageGalleries)
+                {
+                    <a asp-action="Delete" asp-route-id="@gallery.Id">Delete</a>
+                }
+            </div>
+        </div>
+    }
+</div>

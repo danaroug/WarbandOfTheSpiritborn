@@ -1,0 +1,20 @@
+﻿@model string
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#helperNav" aria-controls="helperNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="helperNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link">@Model</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

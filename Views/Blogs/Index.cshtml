@@ -6,6 +6,8 @@
     ViewData["Title"] = "Blog";
 }
 
+<partial name="_HelperNav" model='"Blog"' />
+
 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
     <div>
         <h1 class="section-title mb-2">Blog</h1>
@@ -32,8 +34,9 @@ else
             var plainText = WebUtility.HtmlDecode(Regex.Replace(item.BlogPost ?? string.Empty, "<.*?>", string.Empty));
             plainText = Regex.Replace(plainText, @"\s+", " ").Trim();
             var preview = plainText.Length > 240
-            ? plainText.Substring(0, 240) + "..."
-            : plainText;
+                ? plainText.Substring(0, 240) + "..."
+                : plainText;
+
             <div class="col-12 col-lg-6">
                 <article class="content-shell blog-card h-100">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
