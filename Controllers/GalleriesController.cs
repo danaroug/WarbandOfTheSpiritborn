@@ -134,7 +134,7 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return null;
             }
 
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "photos");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
             Directory.CreateDirectory(uploadsFolder);
 
             var extension = Path.GetExtension(model.Image.FileName);
@@ -154,7 +154,7 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return;
             }
 
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "photos");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
             var filePath = Path.Combine(uploadsFolder, fileName);
 
             if (System.IO.File.Exists(filePath))
