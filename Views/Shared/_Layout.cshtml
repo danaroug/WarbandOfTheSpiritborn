@@ -38,10 +38,26 @@
                     <ul class="navbar-nav me-auto mb-3 mb-lg-0 align-items-lg-center">
                         @if (User.IsInRole("Administrator"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link app-nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Users">
-                                    <i class="bi bi-person-lines-fill me-1"></i> User Management
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle app-nav-link"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <i class="bi bi-shield-lock me-1"></i> Admin
                                 </a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <h6 class="dropdown-header">Administrator tools</h6>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Admin" asp-action="Users">
+                                            <i class="bi bi-person-lines-fill me-2"></i> User Management
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         }
 
