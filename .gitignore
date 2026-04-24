@@ -365,4 +365,5 @@ FodyWeavers.xsd
 # Photos folder for uploads
 wwwroot/photos/*
 !wwwroot/photos/.gitkeep
-
+# Local SQL helper scripts
+SQL/
