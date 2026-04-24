@@ -164,7 +164,7 @@
                                     .Where(role => !(role == "Administrator" && user.UserId == Model.CurrentUserId))
                                     .Where(role => !(role == "Administrator" && administratorCount <= 1))
                                     .ToList();
-
+                                var showUserName = !string.Equals(user.UserName, user.Email, StringComparison.OrdinalIgnoreCase);
                                 <article class="card border shadow-sm">
                                     <div class="card-body">
                                         <div class="row g-3 align-items-start">
@@ -175,9 +175,17 @@
                                                         <i class="bi bi-person"></i>
                                                     </div>
 
-                                                    <div>
-                                                        <h3 class="h6 mb-1">@user.Email</h3>
-                                                        <p class="small text-muted mb-2">@user.UserName</p>
+                                                    <div class="admin-user-identity min-w-0">
+                                                        <h3 class="h6 mb-1 admin-user-email" title="@user.Email">
+                                                            @user.Email
+                                                        </h3>
+
+                                                        @if (showUserName)
+                                                        {
+                                                            <p class="small text-muted mb-2 admin-user-name" title="@user.UserName">
+                                                                @user.UserName
+                                                            </p>
+                                                        }
 
                                                         <div class="d-flex flex-wrap gap-1">
                                                             @if (user.UserId == Model.CurrentUserId)

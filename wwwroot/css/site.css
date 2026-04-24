@@ -969,3 +969,25 @@ button.accept-policy {
         transform: none;
     }
 }
+/* Keep long emails/usernames from overflowing inside admin user cards */
+.admin-users-page .admin-user-email,
+.admin-users-page .admin-user-name {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.35;
+}
+/* User identity text */
+
+.admin-users-page .admin-user-identity {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.admin-users-page .admin-user-email,
+.admin-users-page .admin-user-name {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.35;
+}
