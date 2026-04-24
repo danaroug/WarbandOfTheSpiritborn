@@ -1,94 +1,248 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+﻿@model WarbandOfTheSpiritborn.Areas.Admin.Controllers.AdminUsersPageViewModel
 
 @{
     ViewData["Title"] = "User Management";
-    var userRoles = (Dictionary<string, IList<string>>)ViewBag.UserRoles ?? new Dictionary<string, IList<string>>();
-    var allRoles = (List<string>)ViewBag.AllRoles ?? new List<string>();
-    var message = ViewBag.Message as string;
+
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
 }
 
-<h2>User Management</h2>
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+        <p class="text-uppercase small fw-semibold text-muted mb-1">Administrator area</p>
+        <h1 class="mb-2">User Management</h1>
+        <p class="text-muted mb-0">
+            Review registered users and manage their application roles.
+        </p>
+    </div>
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <div class="alert alert-info">@message</div>
-}
-
-<!-- Create Role Section -->
-<div class="mb-4 p-3 border rounded bg-light">
-    <h4>Create New Role</h4>
-    <form asp-action="CreateRole" method="post" class="d-flex align-items-center">
-        <input type="text" name="roleName" class="form-control me-2" placeholder="Enter role name" required />
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Create Role
-        </button>
-    </form>
+    <div class="text-lg-end">
+        <span class="badge rounded-pill bg-dark">
+            <i class="bi bi-shield-lock me-1"></i>
+            Administrator only
+        </span>
+    </div>
 </div>
 
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Assign Role</th>
-            <th>Remove Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
+@if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>@successMessage</span>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>@errorMessage</span>
+    </div>
+}
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-xl-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">
+                    <i class="bi bi-people me-2"></i>
+                    Registered users
+                </h2>
+
+                <div class="row g-3">
+                    <div class="col-6 col-md-4">
+                        <div class="p-3 rounded border bg-light">
+                            <div class="small text-muted">Users</div>
+                            <div class="fs-4 fw-semibold">@Model.Users.Count</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <div class="p-3 rounded border bg-light">
+                            <div class="small text-muted">Roles</div>
+                            <div class="fs-4 fw-semibold">@Model.AllRoles.Count</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <div class="p-3 rounded border bg-light">
+                            <div class="small text-muted">Confirmed emails</div>
+                            <div class="fs-4 fw-semibold">@Model.Users.Count(user => user.EmailConfirmed)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Create new role
+                </h2>
+
+                <form asp-area="Admin" asp-controller="Admin" asp-action="CreateRole" method="post">
+                    <div class="mb-3">
+                        <label for="roleName" class="form-label">Role name</label>
+                        <input id="roleName"
+                               name="roleName"
+                               type="text"
+                               class="form-control"
+                               placeholder="Example: Moderator"
+                               required />
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-plus-lg me-1"></i>
+                        Create role
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+            <div>
+                <h2 class="h5 mb-1">Users and roles</h2>
+                <p class="text-muted mb-0">
+                    Assign or remove roles from registered users.
+                </p>
+            </div>
+        </div>
+
+        @if (!Model.Users.Any())
         {
-            var rolesToAssign = allRoles?.Except(userRoles.ContainsKey(user.Id) ? userRoles[user.Id] : new List<string>()).ToList() ?? new List<string>();
-            var rolesToRemove = userRoles.ContainsKey(user.Id) ? userRoles[user.Id].ToList() : new List<string>();
-
-            <tr>
-                <!-- User email -->
-                <td>@user.Email</td>
-
-                <!-- User roles as badges -->
-                <td>
-                    @foreach (var r in rolesToRemove)
-                    {
-                        <span class="badge bg-primary me-1">@r</span>
-                    }
-                </td>
-
-                <!-- Assign Role -->
-                <td>
-                    <form asp-action="AssignRole" method="post" class="d-flex">
-                        <input type="hidden" name="userId" value="@user.Id" />
-                        <select name="role" class="form-select form-select-sm me-2" @(rolesToAssign.Count == 0 ? "disabled" : "")>
-                            @foreach (var role in rolesToAssign)
-                            {
-                                <option value="@role">@role</option>
-                            }
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-primary" @(rolesToAssign.Count == 0 ? "disabled" : "")>
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </form>
-                </td>
-
-                <!-- Remove Role -->
-                <td>
-                    <form asp-action="RemoveRole" method="post" class="d-flex">
-                        <input type="hidden" name="userId" value="@user.Id" />
-                        <select name="role" class="form-select form-select-sm me-2" @(rolesToRemove.Count == 0 ? "disabled" : "")>
-                            @foreach (var role in rolesToRemove)
-                            {
-                                <option value="@role">@role</option>
-                            }
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-danger" @(rolesToRemove.Count == 0 ? "disabled" : "")>
-                            <i class="bi bi-dash-lg"></i>
-                        </button>
-                    </form>
-                </td>
-            </tr>
+            <div class="alert alert-info mb-0">
+                No users have been registered yet.
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Current roles</th>
+                            <th class="text-nowrap">Assign role</th>
+                            <th class="text-nowrap">Remove role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            var assignableRoles = Model.AllRoles
+                                .Except(user.Roles)
+                                .ToList();
 
-<!-- Optional: include Bootstrap Icons CDN if not already in _Layout.cshtml -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+                            var removableRoles = user.Roles.ToList();
 
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@user.Email</div>
+                                    <div class="small text-muted">@user.UserName</div>
 
+                                    @if (user.UserId == Model.CurrentUserId)
+                                    {
+                                        <span class="badge bg-secondary mt-1">Current admin</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Confirmed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            Not confirmed
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (user.Roles.Any())
+                                    {
+                                        foreach (var role in user.Roles)
+                                        {
+                                            <span class="badge bg-primary me-1">@role</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">No roles assigned</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <form asp-area="Admin"
+                                          asp-controller="Admin"
+                                          asp-action="AssignRole"
+                                          method="post"
+                                          class="d-flex gap-2">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+
+                                        <select name="roleName"
+                                                class="form-select form-select-sm"
+                                                aria-label="Assign role to @user.Email"
+                                                disabled="@(assignableRoles.Count == 0 ? "disabled" : null)">
+                                            @foreach (var role in assignableRoles)
+                                            {
+                                                <option value="@role">@role</option>
+                                            }
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-primary text-nowrap"
+                                                disabled="@(assignableRoles.Count == 0 ? "disabled" : null)">
+                                            <i class="bi bi-plus-lg me-1"></i>
+                                            Add
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <form asp-area="Admin"
+                                          asp-controller="Admin"
+                                          asp-action="RemoveRole"
+                                          method="post"
+                                          class="d-flex gap-2">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+
+                                        <select name="roleName"
+                                                class="form-select form-select-sm"
+                                                aria-label="Remove role from @user.Email"
+                                                disabled="@(removableRoles.Count == 0 ? "disabled" : null)">
+                                            @foreach (var role in removableRoles)
+                                            {
+                                                <option value="@role">@role</option>
+                                            }
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger text-nowrap"
+                                                disabled="@(removableRoles.Count == 0 ? "disabled" : null)">
+                                            <i class="bi bi-dash-lg me-1"></i>
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
