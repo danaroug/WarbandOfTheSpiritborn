@@ -41,8 +41,27 @@
     line-height: 1.2;
 }
 /* Button theme overrides */
-
-.btn-outline-primary {
+.btn-danger {
+    background: var(--brand-copper);
+    border: var(--brand-copper);
+}
+.btn-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--brand-copper);
+    --bs-btn-border-color: var(--brand-copper);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--brand-copper);
+    --bs-btn-hover-border-color: var(--brand-copper);
+    --bs-btn-focus-shadow-rgb: 225, 83, 97;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--brand-copper);
+    --bs-btn-active-border-color: var(--brand-copper);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff : #fff;
+    --bs-btn-disabled-bg: var(--brand-copper);
+    --bs-btn-disabled-border-color: var(--brand-copper);
+}
+    .btn-outline-primary {
     --bs-btn-color: var(--app-accent);
     --bs-btn-border-color: var(--app-accent);
     --bs-btn-hover-color: #fff;
@@ -925,18 +944,25 @@ button.accept-policy {
             background: linear-gradient(135deg, var(--brand-copper), var(--brand-ember-deep));
         }
 
-    /* Keep destructive action distinct but theme-aligned */
-    .admin-users-page .btn-outline-danger {
-        color: var(--app-danger);
-        border-color: rgba(178, 77, 77, 0.38);
-        background: rgba(255, 251, 248, 0.75);
+/* Keep destructive actions distinct but theme-aligned */
+.btn-outline-danger {
+    color: var(--brand-ember);
+    border-color: var(--brand-ember);
+    background: rgba(255, 251, 248, 0.75);
+}
+
+    .btn-outline-danger:hover,
+    .btn-outline-danger:focus {
+        color: #fff;
+        border-color: var(--brand-ember);
+        background: var(--brand-ember);
     }
 
-        .admin-users-page .btn-outline-danger:hover {
-            color: #fff;
-            border-color: var(--app-danger);
-            background: var(--app-danger);
-        }
+    .btn-outline-danger:active {
+        color: #fff !important;
+        border-color: var(--brand-ember) !important;
+        background: var(--brand-ember) !important;
+    }
 
     /* Helper text */
 
