@@ -8,6 +8,8 @@ namespace WarbandOfTheSpiritborn.Controllers
 {
     public class AboutsController : Controller
     {
+        private const string ManageAboutRoles = "Moderator,Administrator";
+
         private readonly ApplicationDbContext _context;
 
         public AboutsController(ApplicationDbContext context)
@@ -15,24 +17,29 @@ namespace WarbandOfTheSpiritborn.Controllers
             _context = context;
         }
 
-        // Everyone can view the About page
+        // Everyone can view the About page.
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.About.ToListAsync());
+            var aboutContent = await _context.About
+                .AsNoTracking()
+                .OrderBy(about => about.Id)
+                .ToListAsync();
+
+            return View(aboutContent);
         }
 
-        // Only Moderator and Administrator can create About content
-        [Authorize(Roles = "Moderator,Administrator")]
+        // Only Moderators and Administrators can create About content.
+        [Authorize(Roles = ManageAboutRoles)]
         public IActionResult Create()
         {
             return View();
         }
 
-        // Only Moderator and Administrator can create About content
+        // Only Moderators and Administrators can create About content.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Moderator,Administrator")]
+        [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Create([Bind("Id,AboutTitle,AboutText")] About about)
         {
             if (!ModelState.IsValid)
@@ -42,11 +49,12 @@ namespace WarbandOfTheSpiritborn.Controllers
 
             _context.Add(about);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        // Only Moderator and Administrator can edit About content
-        [Authorize(Roles = "Moderator,Administrator")]
+        // Only Moderators and Administrators can edit About content.
+        [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -55,6 +63,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             }
 
             var about = await _context.About.FindAsync(id);
+
             if (about == null)
             {
                 return NotFound();
@@ -63,10 +72,10 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // Only Moderator and Administrator can edit About content
+        // Only Moderators and Administrators can edit About content.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Moderator,Administrator")]
+        [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,AboutTitle,AboutText")] About about)
         {
             if (id != about.Id)
@@ -97,8 +106,8 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Only Moderator and Administrator can delete About content
-        [Authorize(Roles = "Moderator,Administrator")]
+        // Only Moderators and Administrators can delete About content.
+        [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -106,7 +115,10 @@ namespace WarbandOfTheSpiritborn.Controllers
                 return NotFound();
             }
 
-            var about = await _context.About.FirstOrDefaultAsync(m => m.Id == id);
+            var about = await _context.About
+                .AsNoTracking()
+                .FirstOrDefaultAsync(about => about.Id == id);
+
             if (about == null)
             {
                 return NotFound();
@@ -115,10 +127,10 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // Only Moderator and Administrator can delete About content
+        // Only Moderators and Administrators can delete About content.
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Moderator,Administrator")]
+        [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var about = await _context.About.FindAsync(id);
@@ -134,7 +146,7 @@ namespace WarbandOfTheSpiritborn.Controllers
 
         private bool AboutExists(int id)
         {
-            return _context.About.Any(e => e.Id == id);
+            return _context.About.Any(about => about.Id == id);
         }
     }
 }
