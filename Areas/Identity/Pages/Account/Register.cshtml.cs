@@ -40,43 +40,59 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
+        // Initialized for use before model binding.
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
-        public string ReturnUrl { get; set; }
+        // Optional destination after registration.
+        public string? ReturnUrl { get; set; }
 
+        // Empty when no external providers are configured.
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+            = new List<AuthenticationScheme>();
 
         public class InputModel
         {
+            // Required input with a safe non-null default.
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
 
+            // Required input with a safe non-null default.
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(
+                100,
+                ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
-            public string Password { get; set; }
+            public string Password { get; set; } = string.Empty;
 
+            // Required input with a safe non-null default.
             [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            [Compare(
+                "Password",
+                ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; } = string.Empty;
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        // Accepts an optional destination on initial page load.
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList(); // Load external login providers.
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        // Accepts an optional destination after form submission.
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/"); // Default to the home page when no return URL is supplied.
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList(); // Reload providers if the page is redisplayed.
+            ExternalLogins = (await _signInManager
+            .GetExternalAuthenticationSchemesAsync())
+            .ToList(); // Reload providers if the page is redisplayed.
 
             if (!ModelState.IsValid)
             {

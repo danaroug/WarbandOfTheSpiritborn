@@ -13,7 +13,7 @@ namespace WarbandOfTheSpiritborn.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260405132454_testmigration")]
-    partial class testmigration
+    partial class TestMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

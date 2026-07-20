@@ -21,13 +21,18 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _sender = sender;
         }
 
-        public string Email { get; set; }
+        // Required for display after the handler validates it.
+        public string Email { get; set; } = string.Empty;
 
         public bool DisplayConfirmAccountLink { get; set; }
 
-        public string EmailConfirmationUrl { get; set; }
+        // Only generated when the development confirmation link is enabled.
+        public string? EmailConfirmationUrl { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
+        // Accepts optional registration-confirmation query parameters.
+        public async Task<IActionResult> OnGetAsync(
+            string? email,
+            string? returnUrl = null)
         {
             if (email == null)
             {

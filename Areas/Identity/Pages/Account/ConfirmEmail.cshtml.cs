@@ -18,10 +18,11 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _userManager = userManager;
         }
 
+        // Optional feedback stored in TempData.
         [TempData]
-        public string StatusMessage { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(string userId, string code)
+        public string? StatusMessage { get; set; }
+        // Confirmation links may be opened with missing query parameters.
+        public async Task<IActionResult> OnGetAsync(string? userId, string? code)
         {
             if (userId == null || code == null)
             {

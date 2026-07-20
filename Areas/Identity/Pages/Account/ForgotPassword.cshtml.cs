@@ -25,14 +25,16 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
+        // Initialized for use before model binding.
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         public class InputModel
         {
+            // Required input with a safe non-null default.
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -50,11 +52,18 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                // The known reset route must always produce a URL.
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", code },
-                    protocol: Request.Scheme);
+                    values: new
+                    {
+                        area = "Identity",
+                        code
+                    },
+                    protocol: Request.Scheme)
+                    ?? throw new InvalidOperationException(
+                        "Unable to generate the password reset URL.");
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,

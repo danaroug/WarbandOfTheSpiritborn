@@ -21,7 +21,8 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, 
+        public LoginModel(
+            SignInManager<IdentityUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<IdentityUser> userManager)
         {
@@ -29,32 +30,38 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
         }
-
+        // Initialize the bound model so it is never null before model binding runs.
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        // Represent the absence of external providers with an empty collection.
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = [];
 
-        public string ReturnUrl { get; set; }
+        // A return URL is optional when the login page is opened directly.
+        public string? ReturnUrl { get; set; }
 
+        // TempData may not contain an error message.
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public class InputModel
         {
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            // Model validation rejects an empty value; initialization keeps it non-null.
+            public string Email { get; set; } = string.Empty;
 
             [Required]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            // Model validation rejects an empty value; initialization keeps it non-null.
+            public string Password { get; set; } = string.Empty;
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        // The return URL is optional when the login page is opened directly.
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -63,32 +70,52 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
+            // Clear the existing external cookie to ensure a clean login process.
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _signInManager
+                .GetExternalAuthenticationSchemesAsync())
+                .ToList();
 
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        // The return URL is optional when the login form is submitted.
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
+            // Reload providers in case the login page must be displayed again.
+            ExternalLogins = (await _signInManager
+                .GetExternalAuthenticationSchemesAsync())
+                .ToList();
+
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // Login failures do not trigger account lockout while lockoutOnFailure is false.
+                var result = await _signInManager.PasswordSignInAsync(
+                    Input.Email,
+                    Input.Password,
+                    Input.RememberMe,
+                    lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage(
+                        "./LoginWith2fa",
+                        new
+                        {
+                            ReturnUrl = returnUrl,
+                            RememberMe = Input.RememberMe
+                        });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
@@ -96,12 +123,13 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Invalid login attempt.");
+
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
