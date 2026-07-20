@@ -22,29 +22,42 @@ namespace WarbandOfTheSpiritborn.Areas.Identity.Pages.Account
             _userManager = userManager;
         }
 
+        // Initialized for use before model binding.
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         public class InputModel
         {
+            // Required input with a safe non-null default.
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
 
+            // Required input with a safe non-null default.
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(
+                100,
+                ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            public string Password { get; set; } = string.Empty;
 
+            // Required input with a safe non-null default.
+            [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            [Compare(
+                "Password",
+                ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; } = string.Empty;
 
-            public string Code { get; set; }
+            // Required token carried from the reset link into the submitted form.
+            [Required]
+            public string Code { get; set; } = string.Empty;
         }
 
-        public IActionResult OnGet(string code = null)
+        // The reset code may be absent from an invalid or incomplete URL.
+        public IActionResult OnGet(string? code = null)
         {
             if (code == null)
             {
