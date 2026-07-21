@@ -3,19 +3,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
+using WarbandOfTheSpiritborn.Services;
 
 namespace WarbandOfTheSpiritborn.Controllers
 {
     public class BlogsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHtmlSanitizationService _htmlSanitizationService;
 
-        public BlogsController(ApplicationDbContext context)
+        public BlogsController(
+            ApplicationDbContext context,
+            IHtmlSanitizationService htmlSanitizationService)
         {
             _context = context;
+            _htmlSanitizationService = htmlSanitizationService;
         }
 
-        // GET: Blogs
+        // Display all blog posts, newest first.
         public async Task<IActionResult> Index()
         {
             var blogs = await _context.Blog
@@ -26,7 +31,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(blogs);
         }
 
-        // GET: Blogs/Details/5
+        // Display one blog post.
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,19 +51,28 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(blog);
         }
 
-        // GET: Blogs/Create
+        // Display the form for creating a blog post.
         [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Blogs/Create
+        // Save a new blog post.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
+        public async Task<IActionResult> Create(
+            [Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
         {
+            // Remove unsafe HTML from the rich-text content.
+            blog.BlogPost =
+                _htmlSanitizationService.SanitizeBlog(blog.BlogPost);
+
+            // Revalidate BlogPost because its value changed after model binding.
+            ModelState.Remove(nameof(Blog.BlogPost));
+            TryValidateModel(blog);
+
             if (!ModelState.IsValid)
             {
                 return View(blog);
@@ -70,7 +84,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Blogs/Edit/5
+        // Display the form for editing a blog post.
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -89,16 +103,26 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(blog);
         }
 
-        // POST: Blogs/Edit/5
+        // Save changes to an existing blog post.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,BlogName,BlogPost,BlogAuthor,ArticleDate")] Blog blog)
         {
             if (id != blog.Id)
             {
                 return NotFound();
             }
+
+            // Remove unsafe HTML before updating the database.
+            blog.BlogPost =
+                _htmlSanitizationService.SanitizeBlog(blog.BlogPost);
+
+            // Revalidate BlogPost because sanitization may make it empty.
+            ModelState.Remove(nameof(Blog.BlogPost));
+            TryValidateModel(blog);
 
             if (!ModelState.IsValid)
             {
@@ -123,7 +147,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Blogs/Delete/5
+        // Display the delete confirmation page.
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -144,7 +168,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(blog);
         }
 
-        // POST: Blogs/Delete/5
+        // Delete the confirmed blog post.
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -163,6 +187,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Check whether the blog post still exists.
         private bool BlogExists(int id)
         {
             return _context.Blog.Any(b => b.Id == id);
