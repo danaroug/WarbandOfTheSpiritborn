@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WarbandOfTheSpiritborn.Data;
 using WarbandOfTheSpiritborn.Models;
+using WarbandOfTheSpiritborn.Services;
 
 namespace WarbandOfTheSpiritborn.Controllers
 {
@@ -11,10 +12,14 @@ namespace WarbandOfTheSpiritborn.Controllers
         private const string ManageAboutRoles = "Moderator,Administrator";
 
         private readonly ApplicationDbContext _context;
+        private readonly IHtmlSanitizationService _htmlSanitizationService;
 
-        public AboutsController(ApplicationDbContext context)
+        public AboutsController(
+            ApplicationDbContext context,
+            IHtmlSanitizationService htmlSanitizationService)
         {
             _context = context;
+            _htmlSanitizationService = htmlSanitizationService;
         }
 
         // Everyone can view the About page.
@@ -29,19 +34,26 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(aboutContent);
         }
 
-        // Only Moderators and Administrators can create About content.
+        // Display the form for creating About content.
         [Authorize(Roles = ManageAboutRoles)]
         public IActionResult Create()
         {
             return View();
         }
 
-        // Only Moderators and Administrators can create About content.
+        // Save new About content.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ManageAboutRoles)]
-        public async Task<IActionResult> Create([Bind("Id,AboutTitle,AboutText")] About about)
+        public async Task<IActionResult> Create(
+            [Bind("Id,AboutTitle,AboutText")] About about)
         {
+            // Remove unsafe HTML before storing the content.
+            about.AboutText =
+                _htmlSanitizationService.SanitizeAbout(about.AboutText);
+            // Revalidate because sanitization may have changed the content.
+            ModelState.Remove(nameof(About.AboutText));
+            TryValidateModel(about);
             if (!ModelState.IsValid)
             {
                 return View(about);
@@ -53,7 +65,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Only Moderators and Administrators can edit About content.
+        // Display the form for editing About content.
         [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -72,16 +84,22 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // Only Moderators and Administrators can edit About content.
+        // Save changes to existing About content.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ManageAboutRoles)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AboutTitle,AboutText")] About about)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,AboutTitle,AboutText")] About about)
         {
             if (id != about.Id)
             {
                 return NotFound();
             }
+
+            // Remove unsafe HTML before updating the database.
+            about.AboutText =
+                _htmlSanitizationService.SanitizeAbout(about.AboutText);
 
             if (!ModelState.IsValid)
             {
@@ -106,7 +124,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Only Moderators and Administrators can delete About content.
+        // Display the delete confirmation page.
         [Authorize(Roles = ManageAboutRoles)]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -127,7 +145,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return View(about);
         }
 
-        // Only Moderators and Administrators can delete About content.
+        // Delete the confirmed About entry.
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = ManageAboutRoles)]
@@ -144,6 +162,7 @@ namespace WarbandOfTheSpiritborn.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Check whether an About entry still exists.
         private bool AboutExists(int id)
         {
             return _context.About.Any(about => about.Id == id);

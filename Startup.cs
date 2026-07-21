@@ -45,6 +45,8 @@ namespace WarbandOfTheSpiritborn
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings")); // Bind email settings from configuration.
             services.AddTransient<IEmailSender, MailKitEmailSender>(); // Use MailKit for identity emails.
+
+            services.AddSingleton<IHtmlSanitizationService, HtmlSanitizationService>();// Register a service for sanitizing HTML content to prevent XSS attacks.
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
